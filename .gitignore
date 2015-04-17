@@ -4,4 +4,4 @@
 *.bak
 .codelite
 .clang
-
+*.mk
