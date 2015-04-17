@@ -1,0 +1,7 @@
+*.o
+*.exe
+*.d
+*.bak
+.codelite
+.clang
+
