@@ -15,6 +15,12 @@ MainFrameBase::MainFrameBase( wxWindow* parent, wxWindowID id, const wxString& t
 	
 	m_menuBar = new wxMenuBar( 0 );
 	m_menuFile = new wxMenu();
+	wxMenuItem* menuNewGame;
+	menuNewGame = new wxMenuItem( m_menuFile, wxID_ANY, wxString( _("New Game") ) + wxT('\t') + wxT("F2"), wxEmptyString, wxITEM_NORMAL );
+	m_menuFile->Append( menuNewGame );
+	
+	m_menuFile->AppendSeparator();
+	
 	wxMenuItem* menuFileExit;
 	menuFileExit = new wxMenuItem( m_menuFile, wxID_EXIT, wxString( _("E&xit") ) + wxT('\t') + wxT("Alt+X"), wxEmptyString, wxITEM_NORMAL );
 	m_menuFile->Append( menuFileExit );
@@ -121,11 +127,13 @@ MainFrameBase::MainFrameBase( wxWindow* parent, wxWindowID id, const wxString& t
 	this->SetSizer( mainSizer );
 	this->Layout();
 	m_statusBar = this->CreateStatusBar( 1, wxST_SIZEGRIP, wxID_ANY );
+	m_gameTimer.SetOwner( this, wxID_ANY );
 	
 	this->Centre( wxBOTH );
 	
 	// Connect Events
 	this->Connect( wxEVT_CLOSE_WINDOW, wxCloseEventHandler( MainFrameBase::OnCloseFrame ) );
+	this->Connect( menuNewGame->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( MainFrameBase::OnNewGameClick ) );
 	this->Connect( menuFileExit->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( MainFrameBase::OnExitClick ) );
 	_pongBackground->Connect( wxEVT_ENTER_WINDOW, wxMouseEventHandler( MainFrameBase::pongBackgroundOnEnterWindow ), NULL, this );
 	_pongBackground->Connect( wxEVT_LEAVE_WINDOW, wxMouseEventHandler( MainFrameBase::pongBackgroundOnLeaveWindow ), NULL, this );
@@ -136,12 +144,14 @@ MainFrameBase::MainFrameBase( wxWindow* parent, wxWindowID id, const wxString& t
 	m_panel3->Connect( wxEVT_MOTION, wxMouseEventHandler( MainFrameBase::pongBackgroundOnMotion ), NULL, this );
 	m_panel6->Connect( wxEVT_MOTION, wxMouseEventHandler( MainFrameBase::pongBackgroundOnMotion ), NULL, this );
 	_padAi->Connect( wxEVT_MOTION, wxMouseEventHandler( MainFrameBase::pongBackgroundOnMotion ), NULL, this );
+	this->Connect( wxID_ANY, wxEVT_TIMER, wxTimerEventHandler( MainFrameBase::OnTimerTick ) );
 }
 
 MainFrameBase::~MainFrameBase()
 {
 	// Disconnect Events
 	this->Disconnect( wxEVT_CLOSE_WINDOW, wxCloseEventHandler( MainFrameBase::OnCloseFrame ) );
+	this->Disconnect( wxID_ANY, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( MainFrameBase::OnNewGameClick ) );
 	this->Disconnect( wxID_EXIT, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( MainFrameBase::OnExitClick ) );
 	_pongBackground->Disconnect( wxEVT_ENTER_WINDOW, wxMouseEventHandler( MainFrameBase::pongBackgroundOnEnterWindow ), NULL, this );
 	_pongBackground->Disconnect( wxEVT_LEAVE_WINDOW, wxMouseEventHandler( MainFrameBase::pongBackgroundOnLeaveWindow ), NULL, this );
@@ -152,5 +162,6 @@ MainFrameBase::~MainFrameBase()
 	m_panel3->Disconnect( wxEVT_MOTION, wxMouseEventHandler( MainFrameBase::pongBackgroundOnMotion ), NULL, this );
 	m_panel6->Disconnect( wxEVT_MOTION, wxMouseEventHandler( MainFrameBase::pongBackgroundOnMotion ), NULL, this );
 	_padAi->Disconnect( wxEVT_MOTION, wxMouseEventHandler( MainFrameBase::pongBackgroundOnMotion ), NULL, this );
+	this->Disconnect( wxID_ANY, wxEVT_TIMER, wxTimerEventHandler( MainFrameBase::OnTimerTick ) );
 	
 }

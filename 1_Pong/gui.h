@@ -25,6 +25,7 @@
 #include <wx/stattext.h>
 #include <wx/statline.h>
 #include <wx/statusbr.h>
+#include <wx/timer.h>
 #include <wx/frame.h>
 
 ///////////////////////////////////////////////////////////////////////////
@@ -51,13 +52,16 @@ class MainFrameBase : public wxFrame
 		wxPanel* m_panel6;
 		wxPanel* _padAi;
 		wxStatusBar* m_statusBar;
+		wxTimer m_gameTimer;
 		
 		// Virtual event handlers, overide them in your derived class
 		virtual void OnCloseFrame( wxCloseEvent& event ) { event.Skip(); }
+		virtual void OnNewGameClick( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnExitClick( wxCommandEvent& event ) { event.Skip(); }
 		virtual void pongBackgroundOnEnterWindow( wxMouseEvent& event ) { event.Skip(); }
 		virtual void pongBackgroundOnLeaveWindow( wxMouseEvent& event ) { event.Skip(); }
 		virtual void pongBackgroundOnMotion( wxMouseEvent& event ) { event.Skip(); }
+		virtual void OnTimerTick( wxTimerEvent& event ) { event.Skip(); }
 		
 	
 	public:
