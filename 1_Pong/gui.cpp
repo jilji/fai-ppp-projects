@@ -137,7 +137,6 @@ MainFrameBase::MainFrameBase( wxWindow* parent, wxWindowID id, const wxString& t
 	this->Connect( menuFileExit->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( MainFrameBase::OnExitClick ) );
 	_pongBackground->Connect( wxEVT_ENTER_WINDOW, wxMouseEventHandler( MainFrameBase::pongBackgroundOnEnterWindow ), NULL, this );
 	_pongBackground->Connect( wxEVT_LEAVE_WINDOW, wxMouseEventHandler( MainFrameBase::pongBackgroundOnLeaveWindow ), NULL, this );
-	_pongBackground->Connect( wxEVT_MOTION, wxMouseEventHandler( MainFrameBase::pongBackgroundOnMotion ), NULL, this );
 	m_panel5->Connect( wxEVT_MOTION, wxMouseEventHandler( MainFrameBase::pongBackgroundOnMotion ), NULL, this );
 	_padMine->Connect( wxEVT_MOTION, wxMouseEventHandler( MainFrameBase::pongBackgroundOnMotion ), NULL, this );
 	m_panel2->Connect( wxEVT_MOTION, wxMouseEventHandler( MainFrameBase::pongBackgroundOnMotion ), NULL, this );
@@ -155,7 +154,6 @@ MainFrameBase::~MainFrameBase()
 	this->Disconnect( wxID_EXIT, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( MainFrameBase::OnExitClick ) );
 	_pongBackground->Disconnect( wxEVT_ENTER_WINDOW, wxMouseEventHandler( MainFrameBase::pongBackgroundOnEnterWindow ), NULL, this );
 	_pongBackground->Disconnect( wxEVT_LEAVE_WINDOW, wxMouseEventHandler( MainFrameBase::pongBackgroundOnLeaveWindow ), NULL, this );
-	_pongBackground->Disconnect( wxEVT_MOTION, wxMouseEventHandler( MainFrameBase::pongBackgroundOnMotion ), NULL, this );
 	m_panel5->Disconnect( wxEVT_MOTION, wxMouseEventHandler( MainFrameBase::pongBackgroundOnMotion ), NULL, this );
 	_padMine->Disconnect( wxEVT_MOTION, wxMouseEventHandler( MainFrameBase::pongBackgroundOnMotion ), NULL, this );
 	m_panel2->Disconnect( wxEVT_MOTION, wxMouseEventHandler( MainFrameBase::pongBackgroundOnMotion ), NULL, this );

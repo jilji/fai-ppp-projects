@@ -246,7 +246,7 @@
                         <event name="OnMiddleDClick"></event>
                         <event name="OnMiddleDown"></event>
                         <event name="OnMiddleUp"></event>
-                        <event name="OnMotion">pongBackgroundOnMotion</event>
+                        <event name="OnMotion"></event>
                         <event name="OnMouseEvents"></event>
                         <event name="OnMouseWheel"></event>
                         <event name="OnPaint"></event>
@@ -1067,7 +1067,7 @@
                 <property name="id">wxID_ANY</property>
                 <property name="name">m_gameTimer</property>
                 <property name="oneshot">0</property>
-                <property name="period">100</property>
+                <property name="period">40</property>
                 <property name="permission">protected</property>
                 <event name="OnTimer">OnTimerTick</event>
             </object>
