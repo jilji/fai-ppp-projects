@@ -213,10 +213,10 @@ void MainFrame::InitRound()
     _gameTimer.Stop();
     
     while (_ballMovement[0] == 0)
-        _ballMovement[0] = rand() % 6 - 3;
+        _ballMovement[0] = rand() % 4 - 2;
     
     while (_ballMovement[1] == 0)
-        _ballMovement[1] = rand() % 6 - 3;
+        _ballMovement[1] = rand() % 4 - 2;
     
     _ball->Show();
     _ball->CenterOnParent();
@@ -286,6 +286,7 @@ void MainFrame::StopGame()
 {
     _gameRunning = false;
     _gameTimer.Stop();
+    _statusBar->PopStatusText(1);
 }
 
 void MainFrame::ClearScore()
