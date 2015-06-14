@@ -19,7 +19,7 @@
 
 using namespace std;
 
-const int WinningScore = 3;
+const int WinningScore = 10;
 
 // initialize the application
 IMPLEMENT_APP(MainApp);
@@ -86,6 +86,7 @@ void MainFrame::OnNewGameClick(wxCommandEvent& event)
     InitRound();
     
     _gameRunning = true;
+    _gamePaused = false;
 }
 
 void MainFrame::OnTimerTick(wxTimerEvent& event)
@@ -203,6 +204,7 @@ void MainFrame::AiScores()
 
 void MainFrame::StartRound()
 {
+    _statusBar->PushStatusText("Game running, pause it with <SPACE>", 1);
     _gameTimer.Start(10);
 }
 
@@ -256,6 +258,24 @@ void MainFrame::HnadleOnKeyDown(wxKeyEvent& event)
         _statusBar->PopStatusText();
         StartRound();
         
+        return;
+    }
+    
+    if (_gameRunning && event.GetKeyCode() == WXK_SPACE)
+    {
+        _statusBar->PopStatusText(1);
+        if (_gamePaused)
+        {
+            _gameTimer.Start(10);
+            _statusBar->PushStatusText("Game running, pause it with <SPACE>", 1);
+        }
+        else
+        {
+            _gameTimer.Stop();
+            _statusBar->PushStatusText("Game paused, resume with <SPACE>", 1);
+        }
+        
+        _gamePaused = !_gamePaused;
         return;
     }
     

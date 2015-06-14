@@ -40,6 +40,7 @@ class MainFrame : public MainFrameBase
 {
 private:
     bool _gameRunning;
+    bool _gamePaused;
     bool _waitForSpace;
     int _racquetMaxSpeed;
     int _racquetHeight;

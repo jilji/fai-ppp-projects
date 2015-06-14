@@ -150,7 +150,7 @@ MainFrameBase::MainFrameBase( wxWindow* parent, wxWindowID id, const wxString& t
 	
 	this->SetSizer( mainSizer );
 	this->Layout();
-	_statusBar = this->CreateStatusBar( 1, wxST_SIZEGRIP, wxID_ANY );
+	_statusBar = this->CreateStatusBar( 2, wxST_SIZEGRIP, wxID_ANY );
 	_gameTimer.SetOwner( this, wxID_ANY );
 	
 	this->Centre( wxBOTH );
