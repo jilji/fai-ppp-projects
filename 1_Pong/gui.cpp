@@ -38,7 +38,7 @@ MainFrameBase::MainFrameBase( wxWindow* parent, wxWindowID id, const wxString& t
 	wxBoxSizer* bSizer2;
 	bSizer2 = new wxBoxSizer( wxHORIZONTAL );
 	
-	m_panel5 = new wxPanel( _pongBackground, wxID_ANY, wxDefaultPosition, wxSize( 10,-1 ), wxTAB_TRAVERSAL );
+	m_panel5 = new wxPanel( _pongBackground, wxID_ANY, wxDefaultPosition, wxSize( 10,-1 ), wxNO_BORDER|wxTAB_TRAVERSAL );
 	m_panel5->SetMinSize( wxSize( 10,-1 ) );
 	m_panel5->SetMaxSize( wxSize( 10,-1 ) );
 	
@@ -58,7 +58,7 @@ MainFrameBase::MainFrameBase( wxWindow* parent, wxWindowID id, const wxString& t
 	m_panel5->Layout();
 	bSizer2->Add( m_panel5, 1, wxEXPAND | wxALL, 0 );
 	
-	m_panel2 = new wxPanel( _pongBackground, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	m_panel2 = new wxPanel( _pongBackground, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxNO_BORDER|wxTAB_TRAVERSAL );
 	wxBoxSizer* bSizer4;
 	bSizer4 = new wxBoxSizer( wxVERTICAL );
 	
@@ -75,12 +75,12 @@ MainFrameBase::MainFrameBase( wxWindow* parent, wxWindowID id, const wxString& t
 	bSizer4->Fit( m_panel2 );
 	bSizer2->Add( m_panel2, 1, wxEXPAND | wxALL, 5 );
 	
-	m_staticline1 = new wxStaticLine( _pongBackground, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL|wxLI_VERTICAL );
+	m_staticline1 = new wxStaticLine( _pongBackground, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL|wxLI_VERTICAL|wxNO_BORDER );
 	m_staticline1->SetForegroundColour( wxColour( 255, 255, 255 ) );
 	
 	bSizer2->Add( m_staticline1, 0, wxEXPAND | wxALL, 5 );
 	
-	m_panel3 = new wxPanel( _pongBackground, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	m_panel3 = new wxPanel( _pongBackground, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxNO_BORDER|wxTAB_TRAVERSAL );
 	wxBoxSizer* bSizer5;
 	bSizer5 = new wxBoxSizer( wxVERTICAL );
 	

@@ -6,3 +6,4 @@
 .clang
 *.mk
 build
+.cmake_dirty
