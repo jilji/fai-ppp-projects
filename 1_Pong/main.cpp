@@ -14,8 +14,12 @@
 #include "main.h"
 #include "util.h"
 #include <cmath>
+#include <cstdlib>
+#include <ctime>
 
 using namespace std;
+
+const int WinningScore = 3;
 
 // initialize the application
 IMPLEMENT_APP(MainApp);
@@ -26,7 +30,9 @@ IMPLEMENT_APP(MainApp);
 
 bool MainApp::OnInit()
 {
-    SetTopWindow(new MainFrame(NULL, true));
+    srand(time(NULL));
+    
+    SetTopWindow(new MainFrame(NULL, false));
     GetTopWindow()->Show();
 
     // true = enter the main loop
@@ -42,6 +48,8 @@ MainFrame::MainFrame(wxWindow* parent, bool showLog)
 {
     m_paddleMaxSpeed = 3;
     m_paddleHeight = this->_padMine->GetSize().GetHeight();
+    
+    this->Bind(wxEVT_CHAR_HOOK, &MainFrame::HnadleOnKeyDown, this);
     
     if (showLog)
     {
@@ -68,13 +76,14 @@ void MainFrame::OnExitClick(wxCommandEvent& event)
 }
 void MainFrame::OnNewGameClick(wxCommandEvent& event)
 {
-    this->m_gameTimer.Start(10);
+    if (m_gameRunning)
+        return;
     
-    this->m_ballMovement[0] = 4;
-    this->m_ballMovement[1] = 2;
+    m_statusBar->PopStatusText();
+    ClearScore();
+    InitRound();
     
-    this->_ball->Show();
-    this->_ball->CenterOnParent();
+    m_gameRunning = true;
 }
 
 void MainFrame::OnTimerTick(wxTimerEvent& event)
@@ -85,11 +94,14 @@ void MainFrame::OnTimerTick(wxTimerEvent& event)
     const wxPoint pt = getMousePositionInsideArea(bgPositionOnScreen, bgSize);
     
     wxPoint newBallPosition = MoveBall();
+    
+    if (CheckForWinner())
+    {
+        StopGame();
+    }
+    
     MovePaddleTowardCoordinate(_padMine, pt.y, bgSize);
     MovePaddleTowardCoordinate(_padAi, newBallPosition.y, bgSize);
-    
-    _padPathMine->ClearBackground();
-    _padPathAi->ClearBackground();
 }
 
 void MainFrame::MovePaddleTowardCoordinate(wxPanel* paddle, int desiredYcoordinate,
@@ -105,19 +117,15 @@ void MainFrame::MovePaddleTowardCoordinate(wxPanel* paddle, int desiredYcoordina
     int direction = signum(difference);
     
     int newPosition = padPosition.y + (direction * min(abs(difference), m_paddleMaxSpeed));
-    wxLogDebug("pad pos: %d tgt: %d diff: %d dir: %d newpos: %d",
-               padPosition.y, desiredYcoordinate, difference, direction, newPosition);
     
     if (newPosition < 0)
     {
-        wxLogDebug("cap 0");
         newPosition = 0;
     }
         
     int gameboardHeight = gameboardSize.GetHeight();
     if (newPosition > gameboardHeight)
     {
-        wxLogDebug("cap %d", gameboardHeight);
         newPosition = gameboardHeight;
     }
     
@@ -138,10 +146,132 @@ wxPoint MainFrame::MoveBall()
     ballPosition.x += m_ballMovement[0];
     ballPosition.y += m_ballMovement[1];
     
+    wxSize bg_size = _pongBackground->GetSize();
+    if (ballPosition.y + 10 > bg_size.GetHeight() || ballPosition.y < 0)
+        m_ballMovement[1] *= -1;
+        
+    if (ballPosition.x < 10)
+    {
+        if (HitsPaddle(_padMine, ballPosition.y))
+        {
+            // todo: compute if mine pad bounce
+            m_ballMovement[0] *= -1;
+        }
+        else
+        {
+            AiScores();
+            InitRound();
+            return ballPosition;
+        }
+    }
+    
+    // +10 - ball width, -10 paddle width -> bounce from paddle
+    if (ballPosition.x + 10 > bg_size.GetWidth() - 10)
+    {
+        if (HitsPaddle(_padAi, ballPosition.y))
+        {
+            // todo: compute AI pad bounce
+            m_ballMovement[0] *= -1;
+        }
+        else
+        {
+            PlayerScores();
+            InitRound();
+            return ballPosition;
+        }
+    }
+        
     _ball->SetPosition(ballPosition);
     
     // return position of ball center
     ballPosition.x += 5;
     ballPosition.y += 5;
     return ballPosition;
+}
+
+bool MainFrame::HitsPaddle(wxPanel* paddle, int yCoord)
+{
+    wxPoint paddlePos = paddle->GetPosition();
+    return yCoord > paddlePos.y && yCoord < paddlePos.y + m_paddleHeight;
+}
+
+void MainFrame::AiScores()
+{
+    m_score[1]++;
+    _scoreAi->SetLabel(wxString::Format(wxT("%i"),m_score[1]));
+}
+
+void MainFrame::StartRound()
+{
+    this->m_gameTimer.Start(10);
+}
+
+void MainFrame::InitRound()
+{
+    this->m_gameTimer.Stop();
+    
+    while (this->m_ballMovement[0] == 0)
+        this->m_ballMovement[0] = rand() % 6 - 3;
+    
+    while (this->m_ballMovement[1] == 0)
+        this->m_ballMovement[1] = rand() % 6 - 3;
+    
+    this->_ball->Show();
+    this->_ball->CenterOnParent();
+    this->_padMine->CenterOnParent();
+    this->_padAi->CenterOnParent();
+    
+    this->m_statusBar->PushStatusText("Game ready. Press SPACE to start.");
+    this->m_waitForSpace = true;
+}
+
+void MainFrame::PlayerScores()
+{
+    m_score[0]++;
+    _scoreMine->SetLabel(wxString::Format(wxT("%i"),m_score[0]));
+}
+
+bool MainFrame::CheckForWinner()
+{
+    if (m_score[0] >= WinningScore)
+    {
+        m_statusBar->PushStatusText("Player wins the game! Start new game to play again.");
+        return true;
+    }
+    
+    if (m_score[1] >= WinningScore)
+    {
+        m_statusBar->PushStatusText("AI wins the game! Start new game to play again.");
+        return true;
+    }
+    
+    return false;
+}
+
+void MainFrame::HnadleOnKeyDown(wxKeyEvent& event)
+{
+    if (m_waitForSpace && event.GetKeyCode() == WXK_SPACE)
+    {
+        m_waitForSpace = false;
+        m_statusBar->PopStatusText();
+        StartRound();
+        
+        return;
+    }
+    
+    event.Skip();
+}
+
+void MainFrame::StopGame()
+{
+    m_gameRunning = false;
+    m_gameTimer.Stop();
+}
+
+void MainFrame::ClearScore()
+{
+    m_score[0] = 0;
+    _scoreMine->SetLabel(wxString::Format(wxT("%i"),m_score[0]));
+    m_score[1] = 0;
+    _scoreAi->SetLabel(wxString::Format(wxT("%i"),m_score[1]));
 }

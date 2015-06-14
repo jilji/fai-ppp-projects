@@ -39,9 +39,12 @@ DECLARE_APP(MainApp)
 class MainFrame : public MainFrameBase
 {
 private:
+    bool m_gameRunning;
+    bool m_waitForSpace;
     int m_paddleMaxSpeed;
     int m_paddleHeight;
     int m_ballMovement[2];
+    int m_score[2]; // 0 - player, 1 - AI
     wxLog* m_log;
     
 public:
@@ -54,11 +57,21 @@ protected:
     virtual void OnExitClick(wxCommandEvent& event);
     virtual void OnNewGameClick(wxCommandEvent& event);
     virtual void OnTimerTick(wxTimerEvent& event);
+    void HnadleOnKeyDown(wxKeyEvent& event);
 
 private:
+    void StartRound();
+    void InitRound();
+    void StopGame();
+    void PlayerScores();
+    void AiScores();
+    void ClearScore();
+    bool CheckForWinner();
+
     void MovePaddleTowardCoordinate(wxPanel* paddle,
             int desiredYcoordinate, const wxSize& gameboardSize);
     wxPoint MoveBall();
+    bool HitsPaddle(wxPanel* paddle, int yCoord);
 };
 
 #endif //__main__
