@@ -51,6 +51,7 @@ class MainFrameBase : public wxFrame
 		wxStaticText* _scoreAi;
 		wxPanel* m_panel6;
 		wxPanel* _padAi;
+		wxPanel* _ball;
 		wxStatusBar* m_statusBar;
 		wxTimer m_gameTimer;
 		

@@ -15,6 +15,8 @@
 #include "util.h"
 #include <cmath>
 
+using namespace std;
+
 // initialize the application
 IMPLEMENT_APP(MainApp);
 
@@ -24,7 +26,7 @@ IMPLEMENT_APP(MainApp);
 
 bool MainApp::OnInit()
 {
-    SetTopWindow(new MainFrame(NULL));
+    SetTopWindow(new MainFrame(NULL, true));
     GetTopWindow()->Show();
 
     // true = enter the main loop
@@ -35,14 +37,24 @@ bool MainApp::OnInit()
 // main application frame implementation
 ////////////////////////////////////////////////////////////////////////////////
 
-MainFrame::MainFrame(wxWindow* parent)
+MainFrame::MainFrame(wxWindow* parent, bool showLog)
     : MainFrameBase(parent)
 {
+    m_paddleMaxSpeed = 3;
     m_paddleHeight = this->_padMine->GetSize().GetHeight();
+    
+    if (showLog)
+    {
+        m_log = new wxLogWindow(this, "Log");
+        wxLog::SetActiveTarget(m_log);
+    }
+    else
+        m_log = 0;
 }
 
 MainFrame::~MainFrame()
 {
+    delete m_log;
 }
 
 void MainFrame::OnCloseFrame(wxCloseEvent& event)
@@ -57,22 +69,76 @@ void MainFrame::OnExitClick(wxCommandEvent& event)
 void MainFrame::OnNewGameClick(wxCommandEvent& event)
 {
     this->m_gameTimer.Start(10);
+    
+    this->m_ballMovement[0] = 4;
+    this->m_ballMovement[1] = 2;
+    
+    this->_ball->Show();
+    this->_ball->CenterOnParent();
 }
 
 void MainFrame::OnTimerTick(wxTimerEvent& event)
 {
-    wxPoint bgPosition = this->_pongBackground->GetScreenPosition();
-    wxSize bgSize = this->_pongBackground->GetSize();
+    wxPoint bgPositionOnScreen = _pongBackground->GetScreenPosition();
+    wxSize bgSize = _pongBackground->GetSize();
     
-    const wxPoint pt = getMousePositionInsideArea(bgPosition, bgSize);
+    const wxPoint pt = getMousePositionInsideArea(bgPositionOnScreen, bgSize);
     
-    wxPoint padPosition = this->_padMine->GetPosition();
-    padPosition.y = std::min(pt.y, bgSize.GetHeight() - m_paddleHeight);
-
-    this->_padMine->SetPosition(padPosition);
+    wxPoint newBallPosition = MoveBall();
+    MovePaddleTowardCoordinate(_padMine, pt.y, bgSize);
+    MovePaddleTowardCoordinate(_padAi, newBallPosition.y, bgSize);
 }
 
-void MainFrame::MoveUserPaddle(const wxPoint& mousePosition)
+void MainFrame::MovePaddleTowardCoordinate(wxPanel* paddle, int desiredYcoordinate,
+                                           const wxSize& gameboardSize)
 {
+    wxSize padSize = paddle->GetSize();
+    wxPoint padPosition = paddle->GetPosition();
     
+    int padHeight = padSize.GetHeight();
+    
+    padPosition.y += (padHeight / 2);
+    int difference = desiredYcoordinate - padPosition.y;
+    int direction = signum(difference);
+    
+    int newPosition = padPosition.y + (direction * min(abs(difference), m_paddleMaxSpeed));
+    wxLogDebug("pad pos: %d tgt: %d diff: %d dir: %d newpos: %d",
+               padPosition.y, desiredYcoordinate, difference, direction, newPosition);
+    
+    if (newPosition < 0)
+    {
+        wxLogDebug("cap 0");
+        newPosition = 0;
+    }
+        
+    int gameboardHeight = gameboardSize.GetHeight();
+    if (newPosition > gameboardHeight)
+    {
+        wxLogDebug("cap %d", gameboardHeight);
+        newPosition = gameboardHeight;
+    }
+    
+    padPosition.y = newPosition; 
+    padPosition.y -= (padHeight / 2);
+    
+    // fix the "no change" magic position
+    if (padPosition.y == -1)
+        padPosition.y = 0;
+    
+    paddle->SetPosition(padPosition);
+}
+
+wxPoint MainFrame::MoveBall()
+{
+    wxPoint ballPosition = _ball->GetPosition();
+    
+    ballPosition.x += m_ballMovement[0];
+    ballPosition.y += m_ballMovement[1];
+    
+    _ball->SetPosition(ballPosition);
+    
+    // return position of ball center
+    ballPosition.x += 5;
+    ballPosition.y += 5;
+    return ballPosition;
 }

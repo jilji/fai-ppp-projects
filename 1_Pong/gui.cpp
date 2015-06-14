@@ -117,6 +117,15 @@ MainFrameBase::MainFrameBase( wxWindow* parent, wxWindowID id, const wxString& t
 	m_panel6->Layout();
 	bSizer2->Add( m_panel6, 1, wxEXPAND | wxALL, 0 );
 	
+	_ball = new wxPanel( _pongBackground, wxID_ANY, wxPoint( 50,50 ), wxSize( 10,10 ), wxTAB_TRAVERSAL );
+	_ball->SetForegroundColour( wxColour( 255, 255, 255 ) );
+	_ball->SetBackgroundColour( wxColour( 255, 255, 255 ) );
+	_ball->Hide();
+	_ball->SetMinSize( wxSize( 10,10 ) );
+	_ball->SetMaxSize( wxSize( 10,10 ) );
+	
+	bSizer2->Add( _ball, 0, wxFIXED_MINSIZE, 5 );
+	
 	
 	_pongBackground->SetSizer( bSizer2 );
 	_pongBackground->Layout();

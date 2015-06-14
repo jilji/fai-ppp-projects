@@ -39,10 +39,13 @@ DECLARE_APP(MainApp)
 class MainFrame : public MainFrameBase
 {
 private:
+    int m_paddleMaxSpeed;
     int m_paddleHeight;
+    int m_ballMovement[2];
+    wxLog* m_log;
     
 public:
-    MainFrame(wxWindow* parent);
+    MainFrame(wxWindow* parent, bool showLog);
     virtual ~MainFrame();
 
 protected:
@@ -53,7 +56,9 @@ protected:
     virtual void OnTimerTick(wxTimerEvent& event);
 
 private:
-    void MoveUserPaddle(const wxPoint& mousePosition);
+    void MovePaddleTowardCoordinate(wxPanel* paddle,
+            int desiredYcoordinate, const wxSize& gameboardSize);
+    wxPoint MoveBall();
 };
 
 #endif //__main__

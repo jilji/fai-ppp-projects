@@ -5,3 +5,4 @@
 .codelite
 .clang
 *.mk
+build

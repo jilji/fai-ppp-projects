@@ -6,4 +6,6 @@
 wxPoint getMousePositionInsideArea(const wxPoint& position, const wxSize& size);
 int normalizeFromZero(int value, int zeroValue, int maxValue);
 
+int signum(int x);
+
 #endif // __UTIL_H__
