@@ -39,6 +39,8 @@ MainFrameBase::MainFrameBase( wxWindow* parent, wxWindowID id, const wxString& t
 	bSizer2 = new wxBoxSizer( wxHORIZONTAL );
 	
 	m_panel5 = new wxPanel( _pongBackground, wxID_ANY, wxDefaultPosition, wxSize( 10,-1 ), wxNO_BORDER|wxTAB_TRAVERSAL );
+	m_panel5->SetForegroundColour( wxColour( 0, 0, 0 ) );
+	m_panel5->SetBackgroundColour( wxColour( 0, 0, 0 ) );
 	m_panel5->SetMinSize( wxSize( 10,-1 ) );
 	m_panel5->SetMaxSize( wxSize( 10,-1 ) );
 	
@@ -59,6 +61,9 @@ MainFrameBase::MainFrameBase( wxWindow* parent, wxWindowID id, const wxString& t
 	bSizer2->Add( m_panel5, 1, wxEXPAND | wxALL, 0 );
 	
 	m_panel2 = new wxPanel( _pongBackground, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxNO_BORDER|wxTAB_TRAVERSAL );
+	m_panel2->SetForegroundColour( wxColour( 0, 0, 0 ) );
+	m_panel2->SetBackgroundColour( wxColour( 0, 0, 0 ) );
+	
 	wxBoxSizer* bSizer4;
 	bSizer4 = new wxBoxSizer( wxVERTICAL );
 	
@@ -81,6 +86,9 @@ MainFrameBase::MainFrameBase( wxWindow* parent, wxWindowID id, const wxString& t
 	bSizer2->Add( m_staticline1, 0, wxEXPAND | wxALL, 5 );
 	
 	m_panel3 = new wxPanel( _pongBackground, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxNO_BORDER|wxTAB_TRAVERSAL );
+	m_panel3->SetForegroundColour( wxColour( 0, 0, 0 ) );
+	m_panel3->SetBackgroundColour( wxColour( 0, 0, 0 ) );
+	
 	wxBoxSizer* bSizer5;
 	bSizer5 = new wxBoxSizer( wxVERTICAL );
 	
@@ -98,6 +106,8 @@ MainFrameBase::MainFrameBase( wxWindow* parent, wxWindowID id, const wxString& t
 	bSizer2->Add( m_panel3, 1, wxEXPAND | wxALL, 5 );
 	
 	m_panel6 = new wxPanel( _pongBackground, wxID_ANY, wxDefaultPosition, wxSize( 10,-1 ), wxTAB_TRAVERSAL );
+	m_panel6->SetForegroundColour( wxColour( 0, 0, 0 ) );
+	m_panel6->SetBackgroundColour( wxColour( 0, 0, 0 ) );
 	m_panel6->SetMinSize( wxSize( 10,-1 ) );
 	m_panel6->SetMaxSize( wxSize( 10,-1 ) );
 	
