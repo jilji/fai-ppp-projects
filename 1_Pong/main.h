@@ -72,7 +72,8 @@ private:
             int desiredYcoordinate, const wxSize& gameboardSize);
     wxPoint MoveBall();
     bool DoesHitRacquet(wxPanel* racquet, int yCoord);
-    void BounceBall(wxPanel* racquet);
+    void BounceBallOnRacquet(wxPanel* racquet, int ballCenterYCoord, int xDirection);
+    void SetBallMovement(int x, int y);
 };
 
 #endif //__main__

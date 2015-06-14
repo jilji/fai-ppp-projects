@@ -46,10 +46,10 @@ bool MainApp::OnInit()
 MainFrame::MainFrame(wxWindow* parent, bool showLog)
     : MainFrameBase(parent)
 {
-    _racquetMaxSpeed = 3;
-    _racquetHeight = this->_racquetPlayer->GetSize().GetHeight();
+    _racquetMaxSpeed = 2;
+    _racquetHeight = _racquetPlayer->GetSize().GetHeight();
     
-    this->Bind(wxEVT_CHAR_HOOK, &MainFrame::HnadleOnKeyDown, this);
+    Bind(wxEVT_CHAR_HOOK, &MainFrame::HnadleOnKeyDown, this);
     
     if (showLog)
     {
@@ -58,6 +58,8 @@ MainFrame::MainFrame(wxWindow* parent, bool showLog)
     }
     else
         _log = 0;
+        
+    _statusBar->PushStatusText("Start new game from the menu (or press F2).");
 }
 
 MainFrame::~MainFrame()
@@ -101,7 +103,7 @@ void MainFrame::OnTimerTick(wxTimerEvent& event)
     }
     
     MoveRacquetTowardCoordinate(_racquetPlayer, pt.y, bgSize);
-    MoveRacquetTowardCoordinate(_racquetPlayer, newBallPosition.y, bgSize);
+    MoveRacquetTowardCoordinate(_racquetAi, newBallPosition.y, bgSize);
 }
 
 void MainFrame::MoveRacquetTowardCoordinate(wxPanel* racquet, int desiredYcoordinate,
@@ -154,8 +156,7 @@ wxPoint MainFrame::MoveBall()
     {
         if (DoesHitRacquet(_racquetPlayer, ballPosition.y))
         {
-            // todo: compute if mine racquet bounce
-            _ballMovement[0] *= -1;
+            BounceBallOnRacquet(_racquetPlayer, ballPosition.y + 5, 1);
         }
         else
         {
@@ -170,8 +171,7 @@ wxPoint MainFrame::MoveBall()
     {
         if (DoesHitRacquet(_racquetAi, ballPosition.y))
         {
-            // todo: compute AI racquet bounce
-            _ballMovement[0] *= -1;
+            BounceBallOnRacquet(_racquetAi, ballPosition.y + 5, -1);
         }
         else
         {
@@ -192,7 +192,7 @@ wxPoint MainFrame::MoveBall()
 bool MainFrame::DoesHitRacquet(wxPanel* racquet, int yCoord)
 {
     wxPoint racquetPos = racquet->GetPosition();
-    return yCoord > racquetPos.y && yCoord < racquetPos.y + _racquetHeight;
+    return yCoord > racquetPos.y && yCoord + 10 < racquetPos.y + _racquetHeight;
 }
 
 void MainFrame::AiScores()
@@ -203,26 +203,26 @@ void MainFrame::AiScores()
 
 void MainFrame::StartRound()
 {
-    this->_gameTimer.Start(10);
+    _gameTimer.Start(10);
 }
 
 void MainFrame::InitRound()
 {
-    this->_gameTimer.Stop();
+    _gameTimer.Stop();
     
-    while (this->_ballMovement[0] == 0)
-        this->_ballMovement[0] = rand() % 6 - 3;
+    while (_ballMovement[0] == 0)
+        _ballMovement[0] = rand() % 6 - 3;
     
-    while (this->_ballMovement[1] == 0)
-        this->_ballMovement[1] = rand() % 6 - 3;
+    while (_ballMovement[1] == 0)
+        _ballMovement[1] = rand() % 6 - 3;
     
-    this->_ball->Show();
-    this->_ball->CenterOnParent();
-    this->_racquetPlayer->CenterOnParent();
-    this->_racquetAi->CenterOnParent();
+    _ball->Show();
+    _ball->CenterOnParent();
+    _racquetPlayer->CenterOnParent();
+    _racquetAi->CenterOnParent();
     
-    this->_statusBar->PushStatusText("Game ready. Press SPACE to start.");
-    this->_waitForSpace = true;
+    _statusBar->PushStatusText("Game ready. Press SPACE to start.");
+    _waitForSpace = true;
 }
 
 void MainFrame::PlayerScores()
@@ -274,4 +274,50 @@ void MainFrame::ClearScore()
     _scorePlayer->SetLabel(wxString::Format(wxT("%i"), _score[0]));
     _score[1] = 0;
     _scoreAi->SetLabel(wxString::Format(wxT("%i"), _score[1]));
+}
+
+void MainFrame::BounceBallOnRacquet(wxPanel* racquet, int ballCenterYCoord, int xDirection)
+{
+    int positionOnRacquet = ballCenterYCoord - racquet->GetPosition().y;
+    
+    switch (positionOnRacquet / 7)
+    {
+        case 0: //  0- 7 => 5,5
+            SetBallMovement(xDirection * 5, 5);
+            break;
+            
+        case 1: //  8-14 => 4,3
+            SetBallMovement(xDirection * 4, 3);
+            break;
+            
+        case 2: // 15-21 => 4,2
+            SetBallMovement(xDirection * 4, 2);
+            break;
+            
+        case 3: // 22-28 => 3,1
+            SetBallMovement(xDirection * 3, 1);
+            break;
+            
+        case 4: // 29-35 => 3,-1
+            SetBallMovement(xDirection * 3, -1);
+            break;
+            
+        case 5: // 36-42 => 4,-2
+            SetBallMovement(xDirection * 4, -2);
+            break;
+            
+        case 6: // 43-49 => 4,-3
+            SetBallMovement(xDirection * 4, -3);
+            break;
+            
+        case 7: // 50-56 => 5,-5
+            SetBallMovement(xDirection * 5, -5);
+            break;
+    }
+}
+
+void MainFrame::SetBallMovement(int x, int y)
+{
+    _ballMovement[0] = x;
+    _ballMovement[1] = y;
 }

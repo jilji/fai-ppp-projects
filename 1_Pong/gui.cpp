@@ -51,8 +51,8 @@ MainFrameBase::MainFrameBase( wxWindow* parent, wxWindowID id, const wxString& t
 	_racquetPlayer = new wxPanel( _panel1, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 	_racquetPlayer->SetForegroundColour( wxColour( 255, 255, 255 ) );
 	_racquetPlayer->SetBackgroundColour( wxColour( 255, 255, 255 ) );
-	_racquetPlayer->SetMinSize( wxSize( -1,50 ) );
-	_racquetPlayer->SetMaxSize( wxSize( -1,50 ) );
+	_racquetPlayer->SetMinSize( wxSize( -1,56 ) );
+	_racquetPlayer->SetMaxSize( wxSize( -1,56 ) );
 	
 	bSizer6->Add( _racquetPlayer, 1, wxEXPAND | wxALL, 1 );
 	
@@ -122,8 +122,8 @@ MainFrameBase::MainFrameBase( wxWindow* parent, wxWindowID id, const wxString& t
 	_racquetAi = new wxPanel( _panel4, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 	_racquetAi->SetForegroundColour( wxColour( 255, 255, 255 ) );
 	_racquetAi->SetBackgroundColour( wxColour( 255, 255, 255 ) );
-	_racquetAi->SetMinSize( wxSize( -1,50 ) );
-	_racquetAi->SetMaxSize( wxSize( -1,50 ) );
+	_racquetAi->SetMinSize( wxSize( -1,56 ) );
+	_racquetAi->SetMaxSize( wxSize( -1,56 ) );
 	
 	bSizer61->Add( _racquetAi, 1, wxEXPAND | wxALL, 1 );
 	
@@ -159,10 +159,6 @@ MainFrameBase::MainFrameBase( wxWindow* parent, wxWindowID id, const wxString& t
 	this->Connect( wxEVT_CLOSE_WINDOW, wxCloseEventHandler( MainFrameBase::OnCloseFrame ) );
 	this->Connect( _menuNewGame->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( MainFrameBase::OnNewGameClick ) );
 	this->Connect( _menuFileExit->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( MainFrameBase::OnExitClick ) );
-	_pongBackground->Connect( wxEVT_ENTER_WINDOW, wxMouseEventHandler( MainFrameBase::pongBackgroundOnEnterWindow ), NULL, this );
-	_pongBackground->Connect( wxEVT_LEAVE_WINDOW, wxMouseEventHandler( MainFrameBase::pongBackgroundOnLeaveWindow ), NULL, this );
-	_racquetPlayer->Connect( wxEVT_MOTION, wxMouseEventHandler( MainFrameBase::pongBackgroundOnMotion ), NULL, this );
-	_racquetAi->Connect( wxEVT_MOTION, wxMouseEventHandler( MainFrameBase::pongBackgroundOnMotion ), NULL, this );
 	this->Connect( wxID_ANY, wxEVT_TIMER, wxTimerEventHandler( MainFrameBase::OnTimerTick ) );
 }
 
@@ -172,10 +168,6 @@ MainFrameBase::~MainFrameBase()
 	this->Disconnect( wxEVT_CLOSE_WINDOW, wxCloseEventHandler( MainFrameBase::OnCloseFrame ) );
 	this->Disconnect( wxID_ANY, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( MainFrameBase::OnNewGameClick ) );
 	this->Disconnect( wxID_EXIT, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( MainFrameBase::OnExitClick ) );
-	_pongBackground->Disconnect( wxEVT_ENTER_WINDOW, wxMouseEventHandler( MainFrameBase::pongBackgroundOnEnterWindow ), NULL, this );
-	_pongBackground->Disconnect( wxEVT_LEAVE_WINDOW, wxMouseEventHandler( MainFrameBase::pongBackgroundOnLeaveWindow ), NULL, this );
-	_racquetPlayer->Disconnect( wxEVT_MOTION, wxMouseEventHandler( MainFrameBase::pongBackgroundOnMotion ), NULL, this );
-	_racquetAi->Disconnect( wxEVT_MOTION, wxMouseEventHandler( MainFrameBase::pongBackgroundOnMotion ), NULL, this );
 	this->Disconnect( wxID_ANY, wxEVT_TIMER, wxTimerEventHandler( MainFrameBase::OnTimerTick ) );
 	
 }

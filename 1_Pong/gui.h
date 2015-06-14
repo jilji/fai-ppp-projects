@@ -54,9 +54,6 @@ class MainFrameBase : public wxFrame
 		virtual void OnCloseFrame( wxCloseEvent& event ) { event.Skip(); }
 		virtual void OnNewGameClick( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnExitClick( wxCommandEvent& event ) { event.Skip(); }
-		virtual void pongBackgroundOnEnterWindow( wxMouseEvent& event ) { event.Skip(); }
-		virtual void pongBackgroundOnLeaveWindow( wxMouseEvent& event ) { event.Skip(); }
-		virtual void pongBackgroundOnMotion( wxMouseEvent& event ) { event.Skip(); }
 		virtual void OnTimerTick( wxTimerEvent& event ) { event.Skip(); }
 		
 	
