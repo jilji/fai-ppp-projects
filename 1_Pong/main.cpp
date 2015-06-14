@@ -87,6 +87,9 @@ void MainFrame::OnTimerTick(wxTimerEvent& event)
     wxPoint newBallPosition = MoveBall();
     MovePaddleTowardCoordinate(_padMine, pt.y, bgSize);
     MovePaddleTowardCoordinate(_padAi, newBallPosition.y, bgSize);
+    
+    _padPathMine->ClearBackground();
+    _padPathAi->ClearBackground();
 }
 
 void MainFrame::MovePaddleTowardCoordinate(wxPanel* paddle, int desiredYcoordinate,

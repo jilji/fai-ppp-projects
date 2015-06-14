@@ -42,14 +42,14 @@ class MainFrameBase : public wxFrame
 		wxMenuBar* m_menuBar;
 		wxMenu* m_menuFile;
 		wxPanel* _pongBackground;
-		wxPanel* m_panel5;
+		wxPanel* _padPathMine;
 		wxPanel* _padMine;
 		wxPanel* m_panel2;
 		wxStaticText* _scoreMine;
 		wxStaticLine* m_staticline1;
 		wxPanel* m_panel3;
 		wxStaticText* _scoreAi;
-		wxPanel* m_panel6;
+		wxPanel* _padPathAi;
 		wxPanel* _padAi;
 		wxPanel* _ball;
 		wxStatusBar* m_statusBar;

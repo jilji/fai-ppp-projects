@@ -38,16 +38,16 @@ MainFrameBase::MainFrameBase( wxWindow* parent, wxWindowID id, const wxString& t
 	wxBoxSizer* bSizer2;
 	bSizer2 = new wxBoxSizer( wxHORIZONTAL );
 	
-	m_panel5 = new wxPanel( _pongBackground, wxID_ANY, wxDefaultPosition, wxSize( 10,-1 ), wxNO_BORDER|wxTAB_TRAVERSAL );
-	m_panel5->SetForegroundColour( wxColour( 0, 0, 0 ) );
-	m_panel5->SetBackgroundColour( wxColour( 0, 0, 0 ) );
-	m_panel5->SetMinSize( wxSize( 10,-1 ) );
-	m_panel5->SetMaxSize( wxSize( 10,-1 ) );
+	_padPathMine = new wxPanel( _pongBackground, wxID_ANY, wxDefaultPosition, wxSize( 10,-1 ), wxNO_BORDER|wxTAB_TRAVERSAL );
+	_padPathMine->SetForegroundColour( wxColour( 0, 0, 0 ) );
+	_padPathMine->SetBackgroundColour( wxColour( 0, 0, 0 ) );
+	_padPathMine->SetMinSize( wxSize( 10,-1 ) );
+	_padPathMine->SetMaxSize( wxSize( 10,-1 ) );
 	
 	wxBoxSizer* bSizer6;
 	bSizer6 = new wxBoxSizer( wxVERTICAL );
 	
-	_padMine = new wxPanel( m_panel5, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	_padMine = new wxPanel( _padPathMine, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 	_padMine->SetForegroundColour( wxColour( 255, 255, 255 ) );
 	_padMine->SetBackgroundColour( wxColour( 255, 255, 255 ) );
 	_padMine->SetMinSize( wxSize( -1,50 ) );
@@ -56,9 +56,9 @@ MainFrameBase::MainFrameBase( wxWindow* parent, wxWindowID id, const wxString& t
 	bSizer6->Add( _padMine, 1, wxEXPAND | wxALL, 1 );
 	
 	
-	m_panel5->SetSizer( bSizer6 );
-	m_panel5->Layout();
-	bSizer2->Add( m_panel5, 1, wxEXPAND | wxALL, 0 );
+	_padPathMine->SetSizer( bSizer6 );
+	_padPathMine->Layout();
+	bSizer2->Add( _padPathMine, 1, wxEXPAND | wxALL, 0 );
 	
 	m_panel2 = new wxPanel( _pongBackground, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxNO_BORDER|wxTAB_TRAVERSAL );
 	m_panel2->SetForegroundColour( wxColour( 0, 0, 0 ) );
@@ -105,16 +105,16 @@ MainFrameBase::MainFrameBase( wxWindow* parent, wxWindowID id, const wxString& t
 	bSizer5->Fit( m_panel3 );
 	bSizer2->Add( m_panel3, 1, wxEXPAND | wxALL, 5 );
 	
-	m_panel6 = new wxPanel( _pongBackground, wxID_ANY, wxDefaultPosition, wxSize( 10,-1 ), wxTAB_TRAVERSAL );
-	m_panel6->SetForegroundColour( wxColour( 0, 0, 0 ) );
-	m_panel6->SetBackgroundColour( wxColour( 0, 0, 0 ) );
-	m_panel6->SetMinSize( wxSize( 10,-1 ) );
-	m_panel6->SetMaxSize( wxSize( 10,-1 ) );
+	_padPathAi = new wxPanel( _pongBackground, wxID_ANY, wxDefaultPosition, wxSize( 10,-1 ), wxTAB_TRAVERSAL );
+	_padPathAi->SetForegroundColour( wxColour( 0, 0, 0 ) );
+	_padPathAi->SetBackgroundColour( wxColour( 0, 0, 0 ) );
+	_padPathAi->SetMinSize( wxSize( 10,-1 ) );
+	_padPathAi->SetMaxSize( wxSize( 10,-1 ) );
 	
 	wxBoxSizer* bSizer61;
 	bSizer61 = new wxBoxSizer( wxVERTICAL );
 	
-	_padAi = new wxPanel( m_panel6, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
+	_padAi = new wxPanel( _padPathAi, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL );
 	_padAi->SetForegroundColour( wxColour( 255, 255, 255 ) );
 	_padAi->SetBackgroundColour( wxColour( 255, 255, 255 ) );
 	_padAi->SetMinSize( wxSize( -1,50 ) );
@@ -123,9 +123,9 @@ MainFrameBase::MainFrameBase( wxWindow* parent, wxWindowID id, const wxString& t
 	bSizer61->Add( _padAi, 1, wxEXPAND | wxALL, 1 );
 	
 	
-	m_panel6->SetSizer( bSizer61 );
-	m_panel6->Layout();
-	bSizer2->Add( m_panel6, 1, wxEXPAND | wxALL, 0 );
+	_padPathAi->SetSizer( bSizer61 );
+	_padPathAi->Layout();
+	bSizer2->Add( _padPathAi, 1, wxEXPAND | wxALL, 0 );
 	
 	_ball = new wxPanel( _pongBackground, wxID_ANY, wxPoint( 50,50 ), wxSize( 10,10 ), wxTAB_TRAVERSAL );
 	_ball->SetForegroundColour( wxColour( 255, 255, 255 ) );
@@ -156,11 +156,11 @@ MainFrameBase::MainFrameBase( wxWindow* parent, wxWindowID id, const wxString& t
 	this->Connect( menuFileExit->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( MainFrameBase::OnExitClick ) );
 	_pongBackground->Connect( wxEVT_ENTER_WINDOW, wxMouseEventHandler( MainFrameBase::pongBackgroundOnEnterWindow ), NULL, this );
 	_pongBackground->Connect( wxEVT_LEAVE_WINDOW, wxMouseEventHandler( MainFrameBase::pongBackgroundOnLeaveWindow ), NULL, this );
-	m_panel5->Connect( wxEVT_MOTION, wxMouseEventHandler( MainFrameBase::pongBackgroundOnMotion ), NULL, this );
+	_padPathMine->Connect( wxEVT_MOTION, wxMouseEventHandler( MainFrameBase::pongBackgroundOnMotion ), NULL, this );
 	_padMine->Connect( wxEVT_MOTION, wxMouseEventHandler( MainFrameBase::pongBackgroundOnMotion ), NULL, this );
 	m_panel2->Connect( wxEVT_MOTION, wxMouseEventHandler( MainFrameBase::pongBackgroundOnMotion ), NULL, this );
 	m_panel3->Connect( wxEVT_MOTION, wxMouseEventHandler( MainFrameBase::pongBackgroundOnMotion ), NULL, this );
-	m_panel6->Connect( wxEVT_MOTION, wxMouseEventHandler( MainFrameBase::pongBackgroundOnMotion ), NULL, this );
+	_padPathAi->Connect( wxEVT_MOTION, wxMouseEventHandler( MainFrameBase::pongBackgroundOnMotion ), NULL, this );
 	_padAi->Connect( wxEVT_MOTION, wxMouseEventHandler( MainFrameBase::pongBackgroundOnMotion ), NULL, this );
 	this->Connect( wxID_ANY, wxEVT_TIMER, wxTimerEventHandler( MainFrameBase::OnTimerTick ) );
 }
@@ -173,11 +173,11 @@ MainFrameBase::~MainFrameBase()
 	this->Disconnect( wxID_EXIT, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( MainFrameBase::OnExitClick ) );
 	_pongBackground->Disconnect( wxEVT_ENTER_WINDOW, wxMouseEventHandler( MainFrameBase::pongBackgroundOnEnterWindow ), NULL, this );
 	_pongBackground->Disconnect( wxEVT_LEAVE_WINDOW, wxMouseEventHandler( MainFrameBase::pongBackgroundOnLeaveWindow ), NULL, this );
-	m_panel5->Disconnect( wxEVT_MOTION, wxMouseEventHandler( MainFrameBase::pongBackgroundOnMotion ), NULL, this );
+	_padPathMine->Disconnect( wxEVT_MOTION, wxMouseEventHandler( MainFrameBase::pongBackgroundOnMotion ), NULL, this );
 	_padMine->Disconnect( wxEVT_MOTION, wxMouseEventHandler( MainFrameBase::pongBackgroundOnMotion ), NULL, this );
 	m_panel2->Disconnect( wxEVT_MOTION, wxMouseEventHandler( MainFrameBase::pongBackgroundOnMotion ), NULL, this );
 	m_panel3->Disconnect( wxEVT_MOTION, wxMouseEventHandler( MainFrameBase::pongBackgroundOnMotion ), NULL, this );
-	m_panel6->Disconnect( wxEVT_MOTION, wxMouseEventHandler( MainFrameBase::pongBackgroundOnMotion ), NULL, this );
+	_padPathAi->Disconnect( wxEVT_MOTION, wxMouseEventHandler( MainFrameBase::pongBackgroundOnMotion ), NULL, this );
 	_padAi->Disconnect( wxEVT_MOTION, wxMouseEventHandler( MainFrameBase::pongBackgroundOnMotion ), NULL, this );
 	this->Disconnect( wxID_ANY, wxEVT_TIMER, wxTimerEventHandler( MainFrameBase::OnTimerTick ) );
 	
