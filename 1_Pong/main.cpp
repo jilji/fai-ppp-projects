@@ -46,23 +46,23 @@ bool MainApp::OnInit()
 MainFrame::MainFrame(wxWindow* parent, bool showLog)
     : MainFrameBase(parent)
 {
-    m_paddleMaxSpeed = 3;
-    m_paddleHeight = this->_padMine->GetSize().GetHeight();
+    _racquetMaxSpeed = 3;
+    _racquetHeight = this->_racquetPlayer->GetSize().GetHeight();
     
     this->Bind(wxEVT_CHAR_HOOK, &MainFrame::HnadleOnKeyDown, this);
     
     if (showLog)
     {
-        m_log = new wxLogWindow(this, "Log");
-        wxLog::SetActiveTarget(m_log);
+        _log = new wxLogWindow(this, "Log");
+        wxLog::SetActiveTarget(_log);
     }
     else
-        m_log = 0;
+        _log = 0;
 }
 
 MainFrame::~MainFrame()
 {
-    delete m_log;
+    delete _log;
 }
 
 void MainFrame::OnCloseFrame(wxCloseEvent& event)
@@ -76,14 +76,14 @@ void MainFrame::OnExitClick(wxCommandEvent& event)
 }
 void MainFrame::OnNewGameClick(wxCommandEvent& event)
 {
-    if (m_gameRunning)
+    if (_gameRunning)
         return;
     
-    m_statusBar->PopStatusText();
+    _statusBar->PopStatusText();
     ClearScore();
     InitRound();
     
-    m_gameRunning = true;
+    _gameRunning = true;
 }
 
 void MainFrame::OnTimerTick(wxTimerEvent& event)
@@ -100,23 +100,23 @@ void MainFrame::OnTimerTick(wxTimerEvent& event)
         StopGame();
     }
     
-    MovePaddleTowardCoordinate(_padMine, pt.y, bgSize);
-    MovePaddleTowardCoordinate(_padAi, newBallPosition.y, bgSize);
+    MoveRacquetTowardCoordinate(_racquetPlayer, pt.y, bgSize);
+    MoveRacquetTowardCoordinate(_racquetPlayer, newBallPosition.y, bgSize);
 }
 
-void MainFrame::MovePaddleTowardCoordinate(wxPanel* paddle, int desiredYcoordinate,
+void MainFrame::MoveRacquetTowardCoordinate(wxPanel* racquet, int desiredYcoordinate,
                                            const wxSize& gameboardSize)
 {
-    wxSize padSize = paddle->GetSize();
-    wxPoint padPosition = paddle->GetPosition();
+    wxSize racquetSize = racquet->GetSize();
+    wxPoint racquetPosition = racquet->GetPosition();
     
-    int padHeight = padSize.GetHeight();
+    int racquetHeight = racquetSize.GetHeight();
     
-    padPosition.y += (padHeight / 2);
-    int difference = desiredYcoordinate - padPosition.y;
+    racquetPosition.y += (racquetHeight / 2);
+    int difference = desiredYcoordinate - racquetPosition.y;
     int direction = signum(difference);
     
-    int newPosition = padPosition.y + (direction * min(abs(difference), m_paddleMaxSpeed));
+    int newPosition = racquetPosition.y + (direction * min(abs(difference), _racquetMaxSpeed));
     
     if (newPosition < 0)
     {
@@ -129,33 +129,33 @@ void MainFrame::MovePaddleTowardCoordinate(wxPanel* paddle, int desiredYcoordina
         newPosition = gameboardHeight;
     }
     
-    padPosition.y = newPosition; 
-    padPosition.y -= (padHeight / 2);
+    racquetPosition.y = newPosition; 
+    racquetPosition.y -= (racquetHeight / 2);
     
     // fix the "no change" magic position
-    if (padPosition.y == -1)
-        padPosition.y = 0;
+    if (racquetPosition.y == -1)
+        racquetPosition.y = 0;
     
-    paddle->SetPosition(padPosition);
+    racquet->SetPosition(racquetPosition);
 }
 
 wxPoint MainFrame::MoveBall()
 {
     wxPoint ballPosition = _ball->GetPosition();
     
-    ballPosition.x += m_ballMovement[0];
-    ballPosition.y += m_ballMovement[1];
+    ballPosition.x += _ballMovement[0];
+    ballPosition.y += _ballMovement[1];
     
     wxSize bg_size = _pongBackground->GetSize();
     if (ballPosition.y + 10 > bg_size.GetHeight() || ballPosition.y < 0)
-        m_ballMovement[1] *= -1;
+        _ballMovement[1] *= -1;
         
     if (ballPosition.x < 10)
     {
-        if (HitsPaddle(_padMine, ballPosition.y))
+        if (DoesHitRacquet(_racquetPlayer, ballPosition.y))
         {
-            // todo: compute if mine pad bounce
-            m_ballMovement[0] *= -1;
+            // todo: compute if mine racquet bounce
+            _ballMovement[0] *= -1;
         }
         else
         {
@@ -165,13 +165,13 @@ wxPoint MainFrame::MoveBall()
         }
     }
     
-    // +10 - ball width, -10 paddle width -> bounce from paddle
+    // +10 - ball width, -10 racquet width -> bounce from racquet
     if (ballPosition.x + 10 > bg_size.GetWidth() - 10)
     {
-        if (HitsPaddle(_padAi, ballPosition.y))
+        if (DoesHitRacquet(_racquetAi, ballPosition.y))
         {
-            // todo: compute AI pad bounce
-            m_ballMovement[0] *= -1;
+            // todo: compute AI racquet bounce
+            _ballMovement[0] *= -1;
         }
         else
         {
@@ -189,59 +189,59 @@ wxPoint MainFrame::MoveBall()
     return ballPosition;
 }
 
-bool MainFrame::HitsPaddle(wxPanel* paddle, int yCoord)
+bool MainFrame::DoesHitRacquet(wxPanel* racquet, int yCoord)
 {
-    wxPoint paddlePos = paddle->GetPosition();
-    return yCoord > paddlePos.y && yCoord < paddlePos.y + m_paddleHeight;
+    wxPoint racquetPos = racquet->GetPosition();
+    return yCoord > racquetPos.y && yCoord < racquetPos.y + _racquetHeight;
 }
 
 void MainFrame::AiScores()
 {
-    m_score[1]++;
-    _scoreAi->SetLabel(wxString::Format(wxT("%i"),m_score[1]));
+    _score[1]++;
+    _scoreAi->SetLabel(wxString::Format(wxT("%i"), _score[1]));
 }
 
 void MainFrame::StartRound()
 {
-    this->m_gameTimer.Start(10);
+    this->_gameTimer.Start(10);
 }
 
 void MainFrame::InitRound()
 {
-    this->m_gameTimer.Stop();
+    this->_gameTimer.Stop();
     
-    while (this->m_ballMovement[0] == 0)
-        this->m_ballMovement[0] = rand() % 6 - 3;
+    while (this->_ballMovement[0] == 0)
+        this->_ballMovement[0] = rand() % 6 - 3;
     
-    while (this->m_ballMovement[1] == 0)
-        this->m_ballMovement[1] = rand() % 6 - 3;
+    while (this->_ballMovement[1] == 0)
+        this->_ballMovement[1] = rand() % 6 - 3;
     
     this->_ball->Show();
     this->_ball->CenterOnParent();
-    this->_padMine->CenterOnParent();
-    this->_padAi->CenterOnParent();
+    this->_racquetPlayer->CenterOnParent();
+    this->_racquetAi->CenterOnParent();
     
-    this->m_statusBar->PushStatusText("Game ready. Press SPACE to start.");
-    this->m_waitForSpace = true;
+    this->_statusBar->PushStatusText("Game ready. Press SPACE to start.");
+    this->_waitForSpace = true;
 }
 
 void MainFrame::PlayerScores()
 {
-    m_score[0]++;
-    _scoreMine->SetLabel(wxString::Format(wxT("%i"),m_score[0]));
+    _score[0]++;
+    _scorePlayer->SetLabel(wxString::Format(wxT("%i"), _score[0]));
 }
 
 bool MainFrame::CheckForWinner()
 {
-    if (m_score[0] >= WinningScore)
+    if (_score[0] >= WinningScore)
     {
-        m_statusBar->PushStatusText("Player wins the game! Start new game to play again.");
+        _statusBar->PushStatusText("Player wins the game! Start new game to play again.");
         return true;
     }
     
-    if (m_score[1] >= WinningScore)
+    if (_score[1] >= WinningScore)
     {
-        m_statusBar->PushStatusText("AI wins the game! Start new game to play again.");
+        _statusBar->PushStatusText("AI wins the game! Start new game to play again.");
         return true;
     }
     
@@ -250,10 +250,10 @@ bool MainFrame::CheckForWinner()
 
 void MainFrame::HnadleOnKeyDown(wxKeyEvent& event)
 {
-    if (m_waitForSpace && event.GetKeyCode() == WXK_SPACE)
+    if (_waitForSpace && event.GetKeyCode() == WXK_SPACE)
     {
-        m_waitForSpace = false;
-        m_statusBar->PopStatusText();
+        _waitForSpace = false;
+        _statusBar->PopStatusText();
         StartRound();
         
         return;
@@ -264,14 +264,14 @@ void MainFrame::HnadleOnKeyDown(wxKeyEvent& event)
 
 void MainFrame::StopGame()
 {
-    m_gameRunning = false;
-    m_gameTimer.Stop();
+    _gameRunning = false;
+    _gameTimer.Stop();
 }
 
 void MainFrame::ClearScore()
 {
-    m_score[0] = 0;
-    _scoreMine->SetLabel(wxString::Format(wxT("%i"),m_score[0]));
-    m_score[1] = 0;
-    _scoreAi->SetLabel(wxString::Format(wxT("%i"),m_score[1]));
+    _score[0] = 0;
+    _scorePlayer->SetLabel(wxString::Format(wxT("%i"), _score[0]));
+    _score[1] = 0;
+    _scoreAi->SetLabel(wxString::Format(wxT("%i"), _score[1]));
 }

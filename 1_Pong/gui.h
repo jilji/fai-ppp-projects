@@ -39,21 +39,16 @@ class MainFrameBase : public wxFrame
 	private:
 	
 	protected:
-		wxMenuBar* m_menuBar;
-		wxMenu* m_menuFile;
+		wxMenuBar* _menuBar;
+		wxMenu* _menuFile;
 		wxPanel* _pongBackground;
-		wxPanel* _padPathMine;
-		wxPanel* _padMine;
-		wxPanel* m_panel2;
-		wxStaticText* _scoreMine;
-		wxStaticLine* m_staticline1;
-		wxPanel* m_panel3;
+		wxPanel* _racquetPlayer;
+		wxStaticText* _scorePlayer;
 		wxStaticText* _scoreAi;
-		wxPanel* _padPathAi;
-		wxPanel* _padAi;
+		wxPanel* _racquetAi;
 		wxPanel* _ball;
-		wxStatusBar* m_statusBar;
-		wxTimer m_gameTimer;
+		wxStatusBar* _statusBar;
+		wxTimer _gameTimer;
 		
 		// Virtual event handlers, overide them in your derived class
 		virtual void OnCloseFrame( wxCloseEvent& event ) { event.Skip(); }
